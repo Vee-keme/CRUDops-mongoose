@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const Product = require("./models/productModels.js");
+const connectDB = require("./config/connectdb.js");
 const app = express();
 
 app.use(express.json());
@@ -67,21 +68,23 @@ app.delete("/products/:id", async (req, res) => {
   }
 });
 
-const PORT = 3000;
+const port = process.env.PORT || 3000;
 
-mongoose
-  .connect(
-    "mongodb+srv://veliaprecious:7WLBSMNvbnXwXC5m@crud-cluster.prwqzva.mongodb.net/?retryWrites=true&w=majority&appName=CRUD-CLUSTER"
-  )
-  .then(() => {
-    console.log("connected to mongodb");
-    app.listen(PORT, () =>
-      console.log(`node api is listening on port ${PORT}`)
-    );
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// mongoose
+//   .connect(
+//     "mongodb+srv://veliaprecious:7WLBSMNvbnXwXC5m@crud-cluster.prwqzva.mongodb.net/?retryWrites=true&w=majority&appName=CRUD-CLUSTER"
+//   )
+//   .then(() => {
+//     console.log("connected to mongodb");
+//     app.listen(port, () =>
+//       console.log(`node api is listening on port ${port}`)
+//     );
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+connectDB();
+app.listen(() => console.log(`node api is listening on port ${port}`));
 
 // if (connection)
 //   console.log("Pinged your deployment. You successfully connected to MongoDB!");
