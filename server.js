@@ -5,6 +5,7 @@ const Product = require("./models/productModels.js");
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   res.send("Hello node api yo");
@@ -35,6 +36,33 @@ app.post("/products", async (req, res) => {
     res.status(200).json(product);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: error?.message });
+  }
+});
+
+app.put("/products/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
+    if (!product)
+      res.status(404).json({ message: `Cannot find product with id ${id}` });
+    const updatedProduct = await Product.findById(id);
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ message: error?.message });
+  }
+});
+
+app.delete("/products/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndDelete(id);
+    if (!product)
+      res.status(404).json({ message: `Cannot find product with id ${id}` });
+
+    //success
+    res.status(200).json(product);
+  } catch (error) {
     res.status(500).json({ message: error?.message });
   }
 });
